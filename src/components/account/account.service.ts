@@ -89,9 +89,11 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   }
 
   async login(dto: { email: string; password: string }) {
-    const account = (await this.findUser({ email: dto.email }))?.toObject();
+    let account = await this.findUser({ email: dto.email });
 
     if (!account) throw new NotFoundException("Account not found");
+
+    account = account.toObject() as any;
 
     if (!account.isVerified)
       throw new ForbiddenException("You need to verify your account first.");
