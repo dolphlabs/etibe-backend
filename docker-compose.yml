@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  backend:
+    build: ./
+    container_name: etibe
+    env_file:
+      - .env
+    ports:
+      - 3003:3300
+    networks:
+      - etibe_network
+
+networks:
+  etibe_network:
+    driver: bridge
