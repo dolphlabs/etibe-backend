@@ -111,6 +111,38 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     return { message: "Successful", data: resAcc };
   }
 
+  async updateProfile(dto: { img: string; username: string }, id: string) {
+    let account = await this.findUser({ _id: id });
+
+    if (!account) throw new NotFoundException("User not found");
+
+    if (await this.findUser({ username: dto.username })) {
+      throw new BadRequestException("Username taken by another user");
+    }
+
+    account = await this.accountModel.findOneAndUpdate(
+      { email: account.email },
+      { username: dto.username, img: dto.img },
+      { new: true }
+    );
+
+    account = account.toObject() as any;
+
+    const resAcc: Partial<IAccRes> = {
+      _id: account._id.toString(),
+      email: account.email,
+      createdAt: account.createdAt,
+      img: account.img,
+      isVerified: account.isVerified,
+      username: account.username,
+      walletAddress: account.walletAddress,
+    };
+
+    return { message: "Successful", data: resAcc };
+  }
+
+  async getWalletAddressByUsername() {}
+
   async findUser(filter: any) {
     return this.accountModel.findOne(filter);
   }
