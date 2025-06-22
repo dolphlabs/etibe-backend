@@ -89,7 +89,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   }
 
   async login(dto: { email: string; password: string }) {
-    const account = (await this.findUser({ email: dto.email })).toObject();
+    const account = (await this.findUser({ email: dto.email }))?.toObject();
 
     if (!account) throw new NotFoundException("Account not found");
 
