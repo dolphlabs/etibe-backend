@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Dolph,
   ForbiddenException,
+  InternalServerErrorException,
   NotFoundException,
 } from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
@@ -10,7 +11,7 @@ import { Model } from "mongoose";
 import { AccountModel, IAccount, IAccRes } from "./account.model";
 import { createUmiWallet } from "@/shared/helpers/generateAddress";
 import { encrypt } from "@/shared/helpers/encryption";
-import { hashString } from "@dolphjs/dolph/utilities";
+import { compareHashedString, hashString } from "@dolphjs/dolph/utilities";
 import {
   generateOtp,
   generateOtpExpiry,
@@ -138,10 +139,46 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       walletAddress: account.walletAddress,
     };
 
-    return { message: "Successful", data: resAcc };
+    return { message: "Success", data: resAcc };
   }
 
-  async getWalletAddressByUsername() {}
+  async getWalletAddressByUsername(username: string) {
+    const account = await this.findUser({ username });
+
+    if (account.walletAddress) {
+      return { message: "Success", data: account.walletAddress };
+    }
+
+    throw new NotFoundException("wallet address not found");
+  }
+
+  async setPin(pin: string, userId: string) {
+    const account = await this.findUser({ _id: userId });
+
+    if (!account) throw new NotFoundException("User not found");
+
+    if (account.pin) throw new BadRequestException("Pin already set.");
+
+    account.pin = await hashString(pin, 11);
+
+    await account.save();
+
+    return { message: "Success" };
+  }
+
+  async confirmPin(pin: string, userId: string) {
+    const account = await this.findUser({ _id: userId });
+
+    if (!account) throw new NotFoundException("User not found");
+
+    if (!account.pin)
+      throw new BadRequestException("Pin does not exist. Set your pin");
+
+    if (!(await compareHashedString(pin, account.pin)))
+      throw new BadRequestException("Pin is incorrect");
+
+    return { message: "success" };
+  }
 
   async findUser(filter: any) {
     return this.accountModel.findOne(filter);

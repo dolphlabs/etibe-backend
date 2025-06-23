@@ -5,6 +5,7 @@ export interface IAccount extends Document {
   img: string;
   walletAddress: string;
   email: string;
+  pin: string;
   password: string;
   privateKey: string;
   isVerified: boolean;
@@ -63,6 +64,10 @@ const AccountSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    pin: {
+      type: String,
+      required: false,
     },
     otp: {
       type: String,
