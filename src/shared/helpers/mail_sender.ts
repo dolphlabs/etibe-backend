@@ -40,7 +40,7 @@ export const sendVerifyEmail = async (to: string, otp: string) => {
   return sendMail(
     to,
     "Verify Email",
-    convertFromMjmlToHtml("../../../templates/verify_email.mjml")({
+    convertFromMjmlToHtml("../../templates/verify_email.mjml")({
       otp,
     })
   );
