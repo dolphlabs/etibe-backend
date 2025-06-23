@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
+  SuccessResponse,
 } from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
 import { Model } from "mongoose";
@@ -17,7 +18,10 @@ import {
   generateOtpExpiry,
   isOtpExpired,
 } from "@/shared/helpers/generators";
-import { sendVerifyEmail } from "@/shared/helpers/mail_sender";
+import {
+  resetPasswordEmail,
+  sendVerifyEmail,
+} from "@/shared/helpers/mail_sender";
 
 @InjectMongo("accountModel", AccountModel)
 export class AccountService extends DolphServiceHandler<Dolph> {
@@ -178,6 +182,47 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       throw new BadRequestException("Pin is incorrect");
 
     return { message: "success" };
+  }
+
+  async forgetPassword(dto: { email: string }) {
+    let account = await this.findUser({ email: dto.email });
+
+    if (!account)
+      throw new NotFoundException("An account with this email doe snot exist");
+
+    account.otp = await generateOtp();
+    account.otpExpiry = await generateOtpExpiry();
+
+    await account.save();
+
+    resetPasswordEmail(account.email, account.otp);
+
+    return {
+      message: "Reset code has been sent.",
+    };
+  }
+
+  async resetPassword(dto: { email: string; otp: string; password: string }) {
+    let account = await this.findUser({ email: dto.email });
+
+    if (!account)
+      throw new NotFoundException("An account with this email doe snot exist");
+
+    if (account.otp !== dto.otp)
+      throw new BadRequestException("Otp is invalid or has expired");
+
+    if (isOtpExpired(account.otpExpiry))
+      throw new BadRequestException("Otp is invalid or has expired");
+
+    account.otp = "";
+    account.otpExpiry = null;
+    account.password = await hashString(dto.password, 11);
+
+    await account.save();
+
+    return {
+      message: "Password reset successful",
+    };
   }
 
   async findUser(filter: any) {

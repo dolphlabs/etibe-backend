@@ -45,3 +45,11 @@ export const sendVerifyEmail = async (to: string, otp: string) => {
     })
   );
 };
+
+export const resetPasswordEmail = async (to: string, otp: string) => {
+  return sendMail(
+    to,
+    "Reset Password",
+    convertFromMjmlToHtml("../../templates/reset_password.mjml")({ otp })
+  );
+};

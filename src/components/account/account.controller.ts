@@ -108,4 +108,20 @@ export class AccountController extends DolphControllerHandler<Dolph> {
 
     SuccessResponse({ res, body: { message: "Success" } });
   }
+
+  @UnShield(authShield)
+  @Post("forget-password")
+  async forgetPassword(req: DRequest, res: DResponse) {
+    const result = await this.AccountService.forgetPassword(req.body);
+
+    SuccessResponse({ res, body: result });
+  }
+
+  @UnShield(authShield)
+  @Post("reset-password")
+  async resetPassword(req: DRequest, res: DResponse) {
+    const result = await this.AccountService.resetPassword(req.body);
+
+    SuccessResponse({ res, body: result });
+  }
 }
