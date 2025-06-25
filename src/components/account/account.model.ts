@@ -26,6 +26,7 @@ export interface IAccRes {
   email: string;
   isVerified: boolean;
   createdAt: Date;
+  isPinSet: boolean;
   walletAddress: string;
 }
 

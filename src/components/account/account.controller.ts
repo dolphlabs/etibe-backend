@@ -85,6 +85,17 @@ export class AccountController extends DolphControllerHandler<Dolph> {
     SuccessResponse({ res, body: result });
   }
 
+  @Post("addresses-via-usernames")
+  async getWalletAddressesViaUsername(req: DRequest, res: DResponse) {
+    const usernames = req.body.usernames;
+
+    const result = await this.AccountService.getWalletAddressesByUsernames(
+      usernames
+    );
+
+    SuccessResponse({ res, body: result });
+  }
+
   @Post("set-pin")
   async setPin(req: DRequest, res: DResponse) {
     const userId = req.payload.sub as string;
@@ -107,6 +118,15 @@ export class AccountController extends DolphControllerHandler<Dolph> {
     await this.AccountService.confirmPin(req.body.pin as string, user);
 
     SuccessResponse({ res, body: { message: "Success" } });
+  }
+
+  @Get("profile")
+  async getProfile(req: DRequest, res: DResponse) {
+    const user = req.payload.info as IAccount;
+
+    const result = await this.AccountService.getProfile(user);
+
+    SuccessResponse({ res, body: result });
   }
 
   @UnShield(authShield)

@@ -88,6 +88,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       isVerified: account.isVerified,
       username: account.username,
       walletAddress: account.walletAddress,
+      isPinSet: !!account.pin,
     };
 
     return { message: "Email verified successfully", data: resAcc };
@@ -111,6 +112,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       isVerified: account.isVerified,
       username: account.username,
       walletAddress: account.walletAddress,
+      isPinSet: !!account.pin,
     };
 
     return { message: "Successful", data: resAcc };
@@ -141,6 +143,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       isVerified: account.isVerified,
       username: account.username,
       walletAddress: account.walletAddress,
+      isPinSet: !!account.pin,
     };
 
     return { message: "Success", data: resAcc };
@@ -154,6 +157,37 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     }
 
     throw new NotFoundException("wallet address not found");
+  }
+
+  async getWalletAddressesByUsernames(usernames: string[]) {
+    let addresses = [];
+
+    for (const username of usernames) {
+      const account = await this.findUser({ username });
+
+      if (account.walletAddress) {
+        addresses.push(account.walletAddress);
+      }
+    }
+
+    return { message: "Success", data: addresses };
+  }
+
+  async getProfile(user: IAccount) {
+    const account = user.toObject() as any;
+
+    const resAcc: Partial<IAccRes> = {
+      _id: account._id.toString(),
+      email: account.email,
+      createdAt: account.createdAt,
+      img: account.img,
+      isVerified: account.isVerified,
+      username: account.username,
+      walletAddress: account.walletAddress,
+      isPinSet: !!account.pin,
+    };
+
+    return { message: "Success", data: resAcc };
   }
 
   async setPin(pin: string, userId: string) {
