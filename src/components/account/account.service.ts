@@ -9,7 +9,12 @@ import {
 } from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
 import { Model } from "mongoose";
-import { AccountModel, IAccount, IAccRes } from "./account.model";
+import {
+  AccountModel,
+  IAccount,
+  IAccRes,
+  IAccResWithPrivateKey,
+} from "./account.model";
 import { createUmiWallet } from "@/shared/helpers/generateAddress";
 import { encrypt } from "@/shared/helpers/encryption";
 import { compareHashedString, hashString } from "@dolphjs/dolph/utilities";
@@ -176,7 +181,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   async getProfile(user: IAccount) {
     const account = user.toObject() as any;
 
-    const resAcc: Partial<IAccRes> = {
+    const resAcc: Partial<IAccResWithPrivateKey> = {
       _id: account._id.toString(),
       email: account.email,
       createdAt: account.createdAt,
@@ -185,6 +190,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       username: account.username,
       walletAddress: account.walletAddress,
       isPinSet: !!account.pin,
+      privateKey: account.privateKey,
     };
 
     return { message: "Success", data: resAcc };

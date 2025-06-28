@@ -30,6 +30,10 @@ export interface IAccRes {
   walletAddress: string;
 }
 
+export interface IAccResWithPrivateKey extends IAccRes {
+  privateKey: string;
+}
+
 const AccountSchema = new Schema(
   {
     username: {
