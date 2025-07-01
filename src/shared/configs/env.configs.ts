@@ -16,6 +16,11 @@ const envSchema = Joi.object()
       .description("Development SMTP username")
       .required(),
     SMTP_USERNAME_PROD: Joi.string().description("Production SMTP username"),
+    RPC_URL: Joi.string()
+      .description("RPC URL")
+      .default("https://devnet.moved.network"),
+    CONTRACT_ADDRESS: Joi.string().description("Contract Address"),
+    TEST_PRIVATE_KEY: Joi.string().description("Private Key"),
   })
   .unknown();
 
@@ -40,4 +45,7 @@ export const envConfigs = {
   },
   env: envVars.NODE_ENV,
   port: process.env.PORT || 5500,
+  rpcUrl: envVars.RPC_URL,
+  contractAddress: envVars.CONTRACT_ADDRESS,
+  testPrivateKey: envVars.TEST_PRIVATE_KEY,
 };

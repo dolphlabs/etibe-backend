@@ -27,6 +27,8 @@ import {
   resetPasswordEmail,
   sendVerifyEmail,
 } from "@/shared/helpers/mail_sender";
+import { ethers } from "ethers";
+import { envConfigs } from "@/shared/configs/env.configs";
 
 @InjectMongo("accountModel", AccountModel)
 export class AccountService extends DolphServiceHandler<Dolph> {
@@ -181,6 +183,15 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   async getProfile(user: IAccount) {
     const account = user.toObject() as any;
 
+    const provider = new ethers.JsonRpcProvider(envConfigs.rpcUrl);
+
+    if (!ethers.isAddress(account.walletAddress))
+      throw new BadRequestException("Wallet address is invalid");
+
+    const balanceWei = await provider.getBalance(account.walletAddress);
+
+    const balanceEth = ethers.formatEther(balanceWei);
+
     const resAcc: Partial<IAccResWithPrivateKey> = {
       _id: account._id.toString(),
       email: account.email,
@@ -191,6 +202,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       walletAddress: account.walletAddress,
       isPinSet: !!account.pin,
       privateKey: account.privateKey,
+      balance: balanceEth,
     };
 
     return { message: "Success", data: resAcc };

@@ -1,0 +1,233 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+
+      "inputs": [
+        {
+          "indexed": true,
+
+          "internalType": "address",
+
+          "name": "channelAddress",
+
+          "type": "address"
+        },
+
+        {
+          "indexed": true,
+
+          "internalType": "address",
+
+          "name": "admin",
+
+          "type": "address"
+        },
+
+        {
+          "indexed": false,
+
+          "internalType": "string",
+
+          "name": "name",
+
+          "type": "string"
+        },
+
+        {
+          "indexed": false,
+
+          "internalType": "uint256",
+
+          "name": "contributionAmount",
+
+          "type": "uint256"
+        },
+
+        {
+          "indexed": false,
+
+          "internalType": "uint256",
+
+          "name": "channelSize",
+
+          "type": "uint256"
+        },
+
+        {
+          "indexed": false,
+
+          "internalType": "bool",
+
+          "name": "isPublic",
+
+          "type": "bool"
+        }
+      ],
+
+      "name": "EtibeChannelCreated",
+
+      "type": "event"
+    },
+
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+
+          "name": "_channelName",
+
+          "type": "string"
+        },
+
+        {
+          "internalType": "string",
+
+          "name": "_channelImage",
+
+          "type": "string"
+        },
+
+        {
+          "internalType": "uint256",
+
+          "name": "_contributionAmount",
+
+          "type": "uint256"
+        },
+
+        {
+          "internalType": "uint256",
+
+          "name": "_startDate",
+
+          "type": "uint256"
+        },
+
+        {
+          "internalType": "uint8",
+
+          "name": "_gracePeriodInDays",
+
+          "type": "uint8"
+        },
+
+        {
+          "internalType": "bool",
+
+          "name": "_isPublic",
+
+          "type": "bool"
+        },
+
+        {
+          "internalType": "address[]",
+
+          "name": "_invitedMembers",
+
+          "type": "address[]"
+        },
+
+        {
+          "internalType": "uint256[]",
+
+          "name": "_payoutOrder",
+
+          "type": "uint256[]"
+        }
+      ],
+
+      "name": "createChannel",
+
+      "outputs": [
+        {
+          "internalType": "address",
+
+          "name": "newChannelAddress",
+
+          "type": "address"
+        }
+      ],
+
+      "stateMutability": "nonpayable",
+
+      "type": "function"
+    },
+
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+
+          "name": "",
+
+          "type": "uint256"
+        }
+      ],
+
+      "name": "deployedChannels",
+
+      "outputs": [
+        {
+          "internalType": "contract EtibeChannel",
+
+          "name": "",
+
+          "type": "address"
+        }
+      ],
+
+      "stateMutability": "view",
+
+      "type": "function"
+    },
+
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+
+          "name": "_index",
+
+          "type": "uint256"
+        }
+      ],
+
+      "name": "getChannelAddress",
+
+      "outputs": [
+        {
+          "internalType": "address",
+
+          "name": "",
+
+          "type": "address"
+        }
+      ],
+
+      "stateMutability": "view",
+
+      "type": "function"
+    },
+
+    {
+      "inputs": [],
+
+      "name": "getChannelCount",
+
+      "outputs": [
+        {
+          "internalType": "uint256",
+
+          "name": "",
+
+          "type": "uint256"
+        }
+      ],
+
+      "stateMutability": "view",
+
+      "type": "function"
+    }
+  ]
+}

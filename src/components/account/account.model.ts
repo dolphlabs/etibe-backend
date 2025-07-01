@@ -32,6 +32,7 @@ export interface IAccRes {
 
 export interface IAccResWithPrivateKey extends IAccRes {
   privateKey: string;
+  balance: string;
 }
 
 const AccountSchema = new Schema(
