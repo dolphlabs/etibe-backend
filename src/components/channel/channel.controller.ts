@@ -11,12 +11,15 @@ import { ChannelService } from "./channel.service";
 import { authShield } from "@/shared/shields/auth.shield";
 import { CreateChannelDto } from "./channel.dto";
 import { AccountService } from "../account/account.service";
+import { EmailsService } from "../emails/emails.service";
+import { IAccount } from "../account/account.model";
 
 @Shield(authShield)
 @Route("channel")
 export class ChannelController extends DolphControllerHandler<Dolph> {
   ChannelService: ChannelService;
   AccountService: AccountService;
+  EmailsService: EmailsService;
   constructor() {
     super();
   }
@@ -38,7 +41,35 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
       // ],
     });
 
+    this.EmailsService.sendChannelInviteMail(
+      addresses.users,
+      data.channelAddress
+    );
+
     SuccessResponse({ res, body: data });
+  }
+
+  @Get("active-members/:address")
+  async fetchActiveMembers(req: DRequest, res: DResponse) {
+    const user = req.payload.sub as string;
+    const address = req.params.address as string;
+
+    const contract = await this.ChannelService.getChannelContract(
+      user,
+      address
+    );
+
+    const result = await this.ChannelService.fetchActiveMembers(contract);
+
+    SuccessResponse({ res, body: result });
+  }
+
+  @Get("all")
+  async getChannels(req: DRequest, res: DResponse) {
+    const user = req.payload.sub as string;
+    const result = await this.ChannelService.fetchAllDeployedChannels(user);
+
+    SuccessResponse({ res, body: result });
   }
 
   @Get("/:address")
@@ -82,7 +113,7 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
   }
 
   @Post("accept-invite/:address")
-  async lockChannel(req: DRequest, res: DResponse) {
+  async acceptInvite(req: DRequest, res: DResponse) {
     const user = req.payload.sub as string;
     const address = req.params.address as string;
 
@@ -92,6 +123,60 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
     );
 
     const result = await this.ChannelService.acceptInvite(contract);
+
+    SuccessResponse({ res, body: result });
+  }
+
+  @Post("lock-channel/:address")
+  async lockChannel(req: DRequest, res: DResponse) {
+    const user = req.payload.sub as string;
+    const address = req.params.address as string;
+
+    const contract = await this.ChannelService.getChannelContract(
+      user,
+      address
+    );
+
+    const result = await this.ChannelService.lockChannel(contract);
+
+    SuccessResponse({ res, body: result });
+  }
+
+  @Post("make-contribution/:address")
+  async makeContribution(req: DRequest, res: DResponse) {
+    const user = req.payload.sub as string;
+    const address = req.params.address as string;
+
+    const contract = await this.ChannelService.getChannelContract(
+      user,
+      address
+    );
+
+    const amount = req.body.amount;
+
+    if (!amount)
+      throw new BadRequestException("Provide amount to be contributed");
+
+    const result = await this.ChannelService.makeContribution(contract, amount);
+
+    SuccessResponse({ res, body: result });
+  }
+
+  @Post("payout/:address")
+  async makePayout(req: DRequest, res: DResponse) {
+    const user = req.payload.sub as string;
+    const address = req.params.address as string;
+
+    const contract = await this.ChannelService.getChannelContract(
+      user,
+      address
+    );
+
+    const result = await this.ChannelService.makeMonthlyDisbursement(
+      contract,
+      address,
+      (req.payload.info as IAccount).walletAddress
+    );
 
     SuccessResponse({ res, body: result });
   }

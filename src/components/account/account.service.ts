@@ -168,16 +168,22 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
   async getWalletAddressesByUsernames(usernames: string[]) {
     let addresses = [];
+    let users = [];
 
     for (const username of usernames) {
       const account = await this.findUser({ username });
 
       if (account.walletAddress) {
         addresses.push(account.walletAddress);
+        users.push({
+          username: account.username,
+          img: account.img,
+          email: account.email,
+        });
       }
     }
 
-    return { message: "Success", data: addresses };
+    return { message: "Success", data: addresses, users };
   }
 
   async getProfile(user: IAccount) {

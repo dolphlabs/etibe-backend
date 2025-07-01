@@ -53,3 +53,18 @@ export const resetPasswordEmail = async (to: string, otp: string) => {
     convertFromMjmlToHtml("../../templates/reset_password.mjml")({ otp })
   );
 };
+
+export const sendChannelInvite = async (
+  to: string,
+  address: string,
+  username: string
+) => {
+  return sendMail(
+    to,
+    "You have been invited to an Etibé",
+    convertFromMjmlToHtml("../../templates/invite_to_channel.mjml")({
+      channelAddress: address,
+      username,
+    })
+  );
+};
