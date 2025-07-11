@@ -231,10 +231,10 @@ export class ChannelService extends DolphServiceHandler<Dolph> {
   }
 
   async acceptInvite(contract: EtibeChannelContract, balance: string) {
-    if (parseFloat(balance) <= 0.00005)
-      throw new BadRequestException(
-        "Insufficient balance. Please fund your address to proceed with this request."
-      );
+    // if (parseFloat(balance) <= 0.00005)
+    //   throw new BadRequestException(
+    //     "Insufficient balance. Please fund your address to proceed with this request."
+    //   );
 
     const tx = await contract.acceptInvite();
 
@@ -390,10 +390,10 @@ export class ChannelService extends DolphServiceHandler<Dolph> {
     amount: string,
     balance: string
   ) {
-    if (parseFloat(balance) <= 0.00005)
-      throw new BadRequestException(
-        "Insufficient balance. Please fund your address to proceed with this request."
-      );
+    // if (parseFloat(balance) <= 0.00005)
+    //   throw new BadRequestException(
+    //     "Insufficient balance. Please fund your address to proceed with this request."
+    //   );
 
     const valueInWei = ethers.parseEther(amount);
 
