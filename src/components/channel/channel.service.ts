@@ -28,7 +28,7 @@ export class ChannelService extends DolphServiceHandler<Dolph> {
   }
 
   async createChannel(userId: string, balance: string, data: CreateChannelDto) {
-    if (parseFloat(balance) <= parseFloat(data.contributionAmount) - 0.0005)
+    if (parseFloat(balance) <= parseFloat(data.contributionAmount) - 0.00005)
       throw new BadRequestException(
         "Insufficient balance. Please fund your address to proceed with this request."
       );
@@ -231,7 +231,7 @@ export class ChannelService extends DolphServiceHandler<Dolph> {
   }
 
   async acceptInvite(contract: EtibeChannelContract, balance: string) {
-    if (parseFloat(balance) <= 0.0005)
+    if (parseFloat(balance) <= 0.00005)
       throw new BadRequestException(
         "Insufficient balance. Please fund your address to proceed with this request."
       );
@@ -390,7 +390,7 @@ export class ChannelService extends DolphServiceHandler<Dolph> {
     amount: string,
     balance: string
   ) {
-    if (parseFloat(balance) <= 0.0005)
+    if (parseFloat(balance) <= 0.00005)
       throw new BadRequestException(
         "Insufficient balance. Please fund your address to proceed with this request."
       );
