@@ -10,6 +10,7 @@ export interface IAccount extends Document {
   privateKey: string;
   isVerified: boolean;
   otp: string;
+  balance: string;
   otpExpiry: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -66,6 +67,10 @@ const AccountSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
+    },
+    balance: {
+      type: String,
+      default: "0.0",
     },
     password: {
       type: String,

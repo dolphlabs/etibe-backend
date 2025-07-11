@@ -198,6 +198,8 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
     const balanceEth = ethers.formatEther(balanceWei);
 
+    await this.accountModel.updateOne({ balance: balanceEth });
+
     const resAcc: Partial<IAccResWithPrivateKey> = {
       _id: account._id.toString(),
       email: account.email,

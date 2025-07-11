@@ -32,14 +32,18 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
       req.body.invitedMembers
     );
 
-    const data = await this.ChannelService.createChannel(user, {
-      ...(req.body as CreateChannelDto),
-      invitedMembers: addresses.data,
-      // invitedMembers: [
-      // "0xBf197A09B145E24fb2279BdB8A263D9D7fddD872",
-      // "0x3e9bbE264Bf323504D925d0FeaF899946C2Fbe68",
-      // ],
-    });
+    const data = await this.ChannelService.createChannel(
+      user,
+      req.payload.info.balance,
+      {
+        ...(req.body as CreateChannelDto),
+        invitedMembers: addresses.data,
+        // invitedMembers: [
+        // "0xBf197A09B145E24fb2279BdB8A263D9D7fddD872",
+        // "0x3e9bbE264Bf323504D925d0FeaF899946C2Fbe68",
+        // ],
+      }
+    );
 
     this.EmailsService.sendChannelInviteMail(
       addresses.users,
@@ -122,7 +126,10 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
       address
     );
 
-    const result = await this.ChannelService.acceptInvite(contract);
+    const result = await this.ChannelService.acceptInvite(
+      contract,
+      req.payload.info.balance
+    );
 
     SuccessResponse({ res, body: result });
   }
@@ -157,7 +164,11 @@ export class ChannelController extends DolphControllerHandler<Dolph> {
     if (!amount)
       throw new BadRequestException("Provide amount to be contributed");
 
-    const result = await this.ChannelService.makeContribution(contract, amount);
+    const result = await this.ChannelService.makeContribution(
+      contract,
+      amount,
+      req.payload.info.balance
+    );
 
     SuccessResponse({ res, body: result });
   }

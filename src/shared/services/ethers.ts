@@ -41,6 +41,7 @@ export class EtherService {
     // sepolia -base
     // const targetChainId = 84532;
     const targetChainId = 1337;
+    // const targetChainId = 42069;
 
     const network = new NoEnsNetwork(
       `my-no-ens-network-${targetChainId}`,
@@ -49,15 +50,6 @@ export class EtherService {
 
     this.provider = new JsonRpcProvider(this.rpcUrl, network);
 
-    // --- NEW ADDITION FOR MORE AGGRESSIVE ENS DISABLING ---
-    // In ethers v6, the Provider, when initialised with a Network,
-    // should reflect that Network's plugin configuration.
-    // However, if some internal Ethers operation *within the provider itself*
-    // or related to the wallet initialization tries to resolve something
-    // as an ENS name, it might still trigger this.
-
-    // Explicitly set the resolveName method on the provider to null
-    // or a no-op function, *if* the error is happening during provider setup.
     (this.provider as any).resolveName = (name: string) => {
       console.warn(
         `[EthersService] Provider.resolveName called for '${name}', returning null (ENS disabled).`
@@ -70,7 +62,6 @@ export class EtherService {
       );
       return null;
     };
-    // --- END NEW ADDITION ---
 
     this.wallet = new Wallet(this.privateKey, this.provider);
   }
